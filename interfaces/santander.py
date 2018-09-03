@@ -17,10 +17,10 @@ class SantanderAccount(BankAccount):
 		self.auth(None, None, None)
 		self.driver = None
 
-	def auth(self, user, password, reg_num):
+	def auth(self, user, password, sec_num):
 		self.user = user
 		self.password = password
-		self.reg_num = reg_num
+		self.sec_num = sec_num
 
 	def login(self, driver_cls=webdriver.PhantomJS):
 		self.driver = driver = driver_cls()
@@ -49,11 +49,24 @@ class SantanderAccount(BankAccount):
 
 
 		# login
-		passcode_e = driver.find_element_by_id('authentication.PassCode')
-		reg_num_e = driver.find_element_by_id('authentication.ERN')
-		passcode_e.send_keys(self.password)
-		reg_num_e.send_keys(self.reg_num)
-		passcode_e.send_keys(Keys.RETURN)
+
+		for i in range(1, len(self.password) + 1):
+			try:
+				password = driver.find_element_by_id('signPosition' + str(i))
+				password.send_keys(self.password[i-1])
+			except:
+				pass
+
+		for i in range(1, len(self.sec_num) + 1):
+			try:
+				sec_num = driver.find_element_by_id('passwordPosition' + str(i))
+				sec_num.send_keys(self.sec_num[i-1])
+			except:
+				pass
+
+		password.send_keys(Keys.RETURN)
+
+		driver.get_screenshot_as_file('screenshot.png')
 
 		# list accounts
 		accounts = (driver
