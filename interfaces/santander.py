@@ -53,20 +53,21 @@ class SantanderAccount(BankAccount):
 		for i in range(1, len(self.password) + 1):
 			try:
 				password = driver.find_element_by_id('signPosition' + str(i))
-				password.send_keys(self.password[i-1])
-			except:
+			except NoSuchElementException:
 				pass
+			else:
+				password.send_keys(self.password[i-1])
 
 		for i in range(1, len(self.sec_num) + 1):
 			try:
 				sec_num = driver.find_element_by_id('passwordPosition' + str(i))
-				sec_num.send_keys(self.sec_num[i-1])
-			except:
+			except NoSuchElementException:
 				pass
+			else:
+				sec_num.send_keys(self.sec_num[i-1])
 
 		password.send_keys(Keys.RETURN)
 
-		driver.get_screenshot_as_file('screenshot.png')
 
 		# list accounts
 		accounts = (driver
